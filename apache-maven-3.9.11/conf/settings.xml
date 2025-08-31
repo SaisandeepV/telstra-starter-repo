@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd">
+
+    <!-- Local repository location (optional) -->
+    <!-- <localRepository>/path/to/local/repo</localRepository> -->
+
+    <!-- Interactive mode (default: true) -->
+    <interactiveMode>true</interactiveMode>
+
+    <!-- Offline mode (default: false) -->
+    <offline>false</offline>
+
+    <!-- Plugin groups -->
+    <pluginGroups>
+        <!-- Example: <pluginGroup>com.your.plugins</pluginGroup> -->
+    </pluginGroups>
+
+    <!-- Proxies -->
+    <proxies>
+        <!-- Example proxy configuration
+        <proxy>
+          <id>example-proxy</id>
+          <active>true</active>
+          <protocol>http</protocol>
+          <host>proxy.host.net</host>
+          <port>8080</port>
+          <username>proxyuser</username>
+          <password>proxypass</password>
+          <nonProxyHosts>localhost|127.0.0.1</nonProxyHosts>
+        </proxy>
+        -->
+    </proxies>
+
+    <!-- Servers (for authentication) -->
+    <servers>
+        <!-- Example server configuration
+        <server>
+          <id>my-repo</id>
+          <username>user</username>
+          <password>pass</password>
+        </server>
+        -->
+    </servers>
+
+    <!-- Mirrors -->
+    <mirrors>
+        <mirror>
+            <id>central-mirror</id>
+            <mirrorOf>central</mirrorOf>
+            <name>Maven Central Mirror</name>
+            <url>https://repo1.maven.org/maven2/</url>
+        </mirror>
+
+        <!-- Block external HTTP repositories (optional, Maven 3.8+ recommended) -->
+        <mirror>
+            <id>maven-default-http-blocker</id>
+            <mirrorOf>external:http:*</mirrorOf>
+            <name>Pseudo repository to block external HTTP</name>
+            <url>http://0.0.0.0/</url>
+            <blocked>true</blocked>
+        </mirror>
+    </mirrors>
+
+    <!-- Profiles -->
+    <profiles>
+        <profile>
+            <id>default-profile</id>
+
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <name>Maven Central</name>
+                    <url>https://repo1.maven.org/maven2/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>central</id>
+                    <name>Maven Central</name>
+                    <url>https://repo1.maven.org/maven2/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+
+    <!-- Active profiles -->
+    <activeProfiles>
+        <activeProfile>default-profile</activeProfile>
+    </activeProfiles>
+
+</settings>
