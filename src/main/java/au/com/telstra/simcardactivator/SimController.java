@@ -1,54 +1,41 @@
-package au.com.telstra.simcardactivator.simcardactivator;
+package au.com.telstra.simcardactivator;
 
-import org.springframework.http.*;
+import au.com.telstra.simcardactivator.model.SimCardRecord;
+import au.com.telstra.simcardactivator.service.SimCardService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/sim")
 public class SimController {
 
-    private final RestTemplate restTemplate = new RestTemplate();
-    private static final String ACTUATOR_URL = "http://localhost:8444/actuate";
+    @Autowired
+    private SimCardService simCardService;
 
     @PostMapping("/activate")
-    public ResponseEntity<String> activateSim(@RequestBody SimRequest simRequest) {
-        // Prepare payload for actuator
-        Map<String, String> payload = new HashMap<>();
-        payload.put("iccid", simRequest.getIccid());
+    public ResponseEntity<String> activateSim(@RequestBody Map<String, String> request) {
+        String iccid = request.get("iccid");
+        String customerEmail = request.get("customerEmail");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Map<String, String>> request = new HttpEntity<>(payload, headers);
+        // ✅ Save record in DB
+        SimCardRecord record = new SimCardRecord(iccid, customerEmail, true);
+        simCardService.saveSimCardRecord(record);
 
-        // Call actuator
-        ResponseEntity<ActuatorResponse> response =
-                restTemplate.postForEntity(ACTUATOR_URL, request, ActuatorResponse.class);
-
-        boolean success = response.getBody() != null && response.getBody().isSuccess();
-        System.out.println("Activation success: " + success);
-
-        return ResponseEntity.ok("Activation " + (success ? "successful" : "failed"));
+        return ResponseEntity.ok("Activation successful for ICCID: " + iccid);
     }
 
-    // --- DTO Classes ---
-    public static class SimRequest {
-        private String iccid;
-        private String customerEmail;
-
-        public String getIccid() { return iccid; }
-        public void setIccid(String iccid) { this.iccid = iccid; }
-        public String getCustomerEmail() { return customerEmail; }
-        public void setCustomerEmail(String customerEmail) { this.customerEmail = customerEmail; }
+    @GetMapping("/query")
+    public ResponseEntity<SimCardRecord> getSimById(@RequestParam Long simCardId) {
+        SimCardRecord record = simCardService.getSimCardRecordById(simCardId);
+        if (record != null) {
+            return ResponseEntity.ok(record);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    public static class ActuatorResponse {
-        private boolean success;
 
-        public boolean isSuccess() { return success; }
-        public void setSuccess(boolean success) { this.success = success; }
-    }
 }
